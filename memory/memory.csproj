@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\MlChipBackend\ChipIn\ChipIn.csproj" />
-    <ProjectReference Include="..\ChipIn.models\ChipIn.models.csproj" />
+    <ProjectReference Include="..\ChipIn.models\ChipIn.models_old.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using Newtonsoft.Json;
+using Npgsql;
+using System.Data;
 
 namespace DatabaseOperations
 {
@@ -6,29 +8,51 @@ namespace DatabaseOperations
     {
         private readonly string connectionString = "Host=localhost;Port=5432;Database=ChipIn;Username=postgres;Password=1234";
 
-        string GetFromDB(string SQLREQUEST) 
+       public string getOneStringFromDB(string SQLREQUEST) 
         {
-            NpgsqlConnection con = new NpgsqlConnection(connectionString);
-            NpgsqlCommand com = new NpgsqlCommand(SQLREQUEST, con);
-            string result = "";
-            con.Open();
-            NpgsqlDataReader reader;
-            reader = com.ExecuteReader();
-            while (reader.Read())
-            {
-                try
-                {
-                    result = reader.GetString(0);
-                }
-                catch (Exception ex) 
-                {
-                    result = "something went wrong" + ex;
-                }
+            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
 
+            DataTable data = new DataTable();
+            NpgsqlDataReader npgsqlDataReader;
+            //NpgsqlCommand comm = new NpgsqlCommand(SQLREQUEST, conn);
+            conn.Open(); //Открываем соединение.
+            using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(SQLREQUEST, conn))
+            {
+                npgsqlDataReader = npgsqlCommand.ExecuteReader();
+                data.Load(npgsqlDataReader);
+                npgsqlDataReader.Close();
+                conn.Close();
+            }         
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(data);
+            if (JSONString == "[]")
+            {
+                JSONString = "Nothing found";
             }
-            con.Close();
             
-            return result;
+            return JSONString;
+        }
+        public List<string> getStringsFromDB(string SQLREQUEST)
+        {   
+            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+            List<string> datafromdb = new List<string>();
+            DataTable data = new DataTable();          
+            string JSONString = string.Empty;
+            conn.Open();
+            using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(SQLREQUEST, conn))
+            {
+                using (NpgsqlDataReader npgsqlDataReader = npgsqlCommand.ExecuteReader())
+                {
+                    data.Load(npgsqlDataReader);
+                    JSONString = JsonConvert.SerializeObject(data);
+                    JSONString.Replace(@"\", "");
+                    datafromdb.Add(JSONString);   
+                }
+                
+                conn.Close();
+            }
+            
+            return datafromdb;
         }
     }
 }

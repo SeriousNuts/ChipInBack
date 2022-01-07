@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ChipIn.models;
+using System;
 using System.Collections.Generic;
 
-namespace ChipIn.models
+namespace ChipIn.Controller.Models
 {
-    public partial class Member
+    public partial class Member : User
     {
-        public int Id { get; set; }
-        public int? UserId { get; set; }
-        public string? UserName { get; set; }
+        public int MemberId { get; set; }
+        public double member_credit { get; set; }
+       // public ICollection<Event> events { get; set; }
     }
 }

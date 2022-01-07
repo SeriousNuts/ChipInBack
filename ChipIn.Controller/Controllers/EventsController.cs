@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChipIn.Controller.Data;
 using ChipIn.models;
+using System.Text.Json.Serialization;
 
 namespace ChipIn.Controller.Controllers
 {
@@ -23,31 +24,40 @@ namespace ChipIn.Controller.Controllers
 
         // GET: api/Events
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEvent()
+        public async Task<ActionResult<IEnumerable<Event>>> GetEvents(int id)
         {
-            return await _context.Event.ToListAsync();
+            return null;
         }
+
 
         // GET: api/Events/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Event>> GetEvent(int id)
+        public async Task<ActionResult<Event>> GetEvent([FromRoute] int id)
         {
-            var @event = await _context.Event.FindAsync(id);
+            var model = await _context.Event.FirstOrDefaultAsync(e =>
+                 e.id == id
+                               );
 
-            if (@event == null)
+            if (model == null)
             {
                 return NotFound();
             }
-
-            return @event;
+            
+            return model;
+        }
+        // GET: api/Events/byName/someName
+        [HttpGet("byName/{partname}")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetEventPartName([FromRoute] string partname)
+        {
+                
+            return await _context.Event.; 
         }
 
         // PUT: api/Events/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEvent(int id, Event @event)
         {
-            if (id != @event.Id)
+            if (id != @event.id)
             {
                 return BadRequest();
             }
@@ -74,13 +84,21 @@ namespace ChipIn.Controller.Controllers
         }
 
         // POST: api/Events
+        
         [HttpPost]
-        public async Task<ActionResult<Event>> PostEvent(Event @event)
-        {
+        public async Task<ActionResult<Event>> PostEvent([Bind("Id,name_,deadline,creditorName,fullAmount")] Event @event)
+        {            
             _context.Event.Add(@event);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict();
+            }
 
-            return CreatedAtAction("GetEvent", new { id = @event.Id }, @event);
+            return CreatedAtAction("GetEvent", new { id = @event.id }, @event);
         }
 
         // DELETE: api/Events/5
@@ -101,7 +119,7 @@ namespace ChipIn.Controller.Controllers
 
         private bool EventExists(int id)
         {
-            return _context.Event.Any(e => e.Id == id);
+            return _context.Event.Any(e => e.id == id);
         }
     }
 }

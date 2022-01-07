@@ -1,21 +1,23 @@
 ﻿
 
 using ChipIn.Controller.Controllers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using ChipIn.Controller.Data;
+using ChipIn.Controller.Models;
+using ChipIn.models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ChipInControllerContext>(options =>
 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ChipInControllerContext")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("postgreConnect")).UseSnakeCaseNamingConvention().UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
 
 // Add services to the container.
-
+builder.Services.AddControllers();
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello world");
 
 
+
+app.MapControllers();
 app.Run();

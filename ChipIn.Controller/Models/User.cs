@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ChipIn.models
+﻿namespace ChipIn.models
 {
     public partial class User
     {

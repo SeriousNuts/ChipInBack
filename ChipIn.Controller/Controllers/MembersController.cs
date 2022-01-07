@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChipIn.Controller.Data;
 using ChipIn.models;
+using ChipIn.Controller.Models;
+using Member = ChipIn.Controller.Models.Member;
 
 namespace ChipIn.Controller.Controllers
 {
@@ -43,7 +45,6 @@ namespace ChipIn.Controller.Controllers
         }
 
         // PUT: api/Members/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMember(int id, Member member)
         {

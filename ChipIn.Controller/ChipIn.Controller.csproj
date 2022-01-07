@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+    <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -18,7 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\MlChipBackend\ChipIn\ChipIn.csproj" />
-    <ProjectReference Include="..\ChipIn.models\ChipIn.models.csproj" />
+    <ProjectReference Include="..\ChipIn.models\ChipIn.models_old.csproj" />
+    <ProjectReference Include="..\DatabaseOperations\DatabaseOperations.csproj" />
     <ProjectReference Include="..\memory\memory.csproj" />
   </ItemGroup>
 
