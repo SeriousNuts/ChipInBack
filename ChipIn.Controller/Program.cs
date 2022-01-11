@@ -3,7 +3,6 @@
 using ChipIn.Controller.Controllers;
 using ChipIn.Controller.Data;
 using ChipIn.Controller.Models;
-using ChipIn.models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChipIn.Controller.Data;
-using ChipIn.models;
+using ChipIn.Controller.Models;
 using System.Text.Json.Serialization;
-
 namespace ChipIn.Controller.Controllers
 {
     [Route("api/[controller]")]
@@ -24,9 +23,9 @@ namespace ChipIn.Controller.Controllers
 
         // GET: api/Events
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEvents(int id)
+        public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
-            return null;
+            return await _context.Event.Include(e => e.members).ToListAsync();
         }
 
 
@@ -34,7 +33,7 @@ namespace ChipIn.Controller.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Event>> GetEvent([FromRoute] int id)
         {
-            var model = await _context.Event.FirstOrDefaultAsync(e =>
+            var model = await _context.Event.Include(e => e.members).FirstOrDefaultAsync(e =>
                  e.id == id
                                );
 
@@ -45,12 +44,53 @@ namespace ChipIn.Controller.Controllers
             
             return model;
         }
-        // GET: api/Events/byName/someName
-        [HttpGet("byName/{partname}")]
+
+        // GET: api/Events/EventsBy/someName
+        [HttpGet("EventsBy/{partname}")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEventPartName([FromRoute] string partname)
         {
-                
-            return await _context.Event.; 
+
+            var events = await _context.Event
+                                .Where(e => e.CreditorName.Equals(partname))
+                                .Include(e => e.members)
+                                .ToListAsync();
+                                    
+            if (events == null)
+            {
+                return NotFound();
+            }
+            return events;
+        }
+        [HttpGet("GetAllUsEv/{id}")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetAllUserEvents([FromRoute] int id)
+        {
+            var events = await _context.Event
+                                .Include(u => u.members)
+                                .ToListAsync();
+            List<Event>EventsM = new List<Event>();
+            
+            
+            if (events == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var e in events)
+            {
+                foreach (var m in e.members)
+                {
+                    if (m.UserId == id)
+                    {
+                        EventsM.Add(e);
+                    }
+                }
+            }
+            if (EventsM.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return EventsM;
         }
 
         // PUT: api/Events/5
@@ -86,8 +126,8 @@ namespace ChipIn.Controller.Controllers
         // POST: api/Events
         
         [HttpPost]
-        public async Task<ActionResult<Event>> PostEvent([Bind("Id,name_,deadline,creditorName,fullAmount")] Event @event)
-        {            
+        public async Task<ActionResult<Event>> PostEvent([Bind("id,name_,deadline,creditorName,fullAmount, members")] Event @event)
+        {
             _context.Event.Add(@event);
             try
             {
@@ -97,12 +137,11 @@ namespace ChipIn.Controller.Controllers
             {
                 return Conflict();
             }
-
             return CreatedAtAction("GetEvent", new { id = @event.id }, @event);
         }
 
-        // DELETE: api/Events/5
-        [HttpDelete("{id}")]
+        // DELETE: api/Events/deleteEvent/2
+        [HttpDelete("deleteEvent/{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
             var @event = await _context.Event.FindAsync(id);

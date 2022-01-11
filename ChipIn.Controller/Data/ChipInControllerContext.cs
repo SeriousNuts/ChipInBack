@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ChipIn.Controller.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChipIn.Controller.Data
@@ -13,10 +14,10 @@ namespace ChipIn.Controller.Data
         {
         }
 
-        public DbSet<ChipIn.models.User> User { get; set; }
+        public DbSet<User_> User_ { get; set; }
 
-        public DbSet<Models.Member> Member { get; set; }
+        public DbSet<Member> Member { get; set; }
 
-        public DbSet<ChipIn.models.Event> Event { get; set; }
+        public DbSet<Event> Event { get; set; }
     }
 }

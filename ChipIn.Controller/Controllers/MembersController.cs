@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChipIn.Controller.Data;
-using ChipIn.models;
 using ChipIn.Controller.Models;
 using Member = ChipIn.Controller.Models.Member;
 
